@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Savior Jordani Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
+    <link rel="stylesheet" href="./css/vars.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+    <div class="panel-container">
+        <div class="saviz-header">
+            <div class="saviz-header-symbol">
+                <img src="./icons/darkPlugin-large.png" alt="">
+            </div>
+            <div class="saviz-header-title">SAVIOR JORDANI STUDIO</div>
+            <div class="saviz-header-menu-wrap">
+                <button class="saviz-header-menu-trigger" id="savizHeaderMenuTrigger" aria-label="Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="saviz-header-menu-dropdown hidden" id="savizHeaderMenuDropdown">
+                    <div class="saviz-header-menu-option" data-value="account">Conta</div>
+                    <div class="saviz-header-menu-option" data-value="help" data-i18n="help_title">Ajuda</div>
+                    <div class="saviz-header-menu-option" data-value="settings" data-i18n="settings_title">Configurações</div>
+                    <div class="saviz-header-menu-option" data-value="about" data-i18n="about_title">Sobre o plugin</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="helping-layers-btn">
+            <div class="helping-layers-info">
+                <div class="helping-layers-title" id="helpingLayersTitle" data-i18n="help_layers_hidden">Helping Layers Hidden</div>
+            </div>
+            <button class="helping-layers-toggle-btn" id="helpingLayersBtn">
+                <img class="helping-layers-toggle-icon hidden" id="helpingLayersIconHide" src="./assets/ui/eye-off-icon.svg" alt="">
+                <img class="helping-layers-toggle-icon" id="helpingLayersIconShow" src="./assets/ui/eye-icon.svg" alt="">
+                <span id="helpingLayersToggleText" data-i18n="help_layers_show_btn">Show</span>
+            </button>
+        </div>
+
+        <div class="content">
+            <div class="retouch-modes-title" data-i18n="retouch_modes">Retouch modes</div>
+
+            <button class="accordion-header" id="textureAccordionHeader" data-target="textureAccordionContent">
+                <div class="accordion-label">
+                    <div class="accordion-title" data-i18n="acc_texture_title">Texture</div>
+                </div>
+                <img class="accordion-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="12" height="18">
+            </button>
+            <div class="accordion-content accordion-content-wide" id="textureAccordionContent">
+                <button class="texture-slot" id="textureSpotHealingBtn" data-i18n-title="tt_spot_healing" title="Spot Healing Brush
+Automatically removes small spots and blemishes">
+                    <img class="texture-slot-icon" src="./assets/texture/spot-healing-icon.svg" alt="Spot Healing Brush" width="15" height="15">
+                </button>
+                <button class="texture-slot" id="textureMagicStampBtn" data-i18n-title="tt_magic_stamp" title="Magic Stamp
+Clones texture from an area to fix larger imperfections">
+                    <img class="texture-slot-icon" src="./assets/texture/magic-stamp-icon.svg" alt="Magic Stamp" width="15" height="15">
+                </button>
+                <button class="texture-slot" id="textureCloneStampBtn" data-i18n-title="tt_clone_soft" title="Clone Stamp Soft
+Clones texture from an area with a softer brush">
+                    <img class="texture-slot-icon" src="./assets/texture/clone-stamp-icon.svg" alt="Clone Stamp Soft" width="15" height="15">
+                </button>
+                <button class="texture-slot" id="textureCloneStampHardBtn" data-i18n-title="tt_clone_hard" title="Clone Stamp Hard
+Clones texture from an area with a firmer brush">
+                    <img class="texture-slot-icon" src="./assets/texture/clone-stamp-hard-icon.svg" alt="Clone Stamp Hard" width="15" height="15">
+                </button>
+                <button class="texture-slot" id="textureRemoveToolBtn" data-i18n-title="tt_remove_tool" title="Remove Tool
+Removes objects/blemishes using generative AI">
+                    <img class="texture-slot-icon" src="./assets/texture/remove-tool-icon.svg" alt="Remove Tool" width="15" height="15">
+                </button>
+                <button class="texture-slot" id="textureAiEditBtn" data-i18n-title="tt_ai_edit" title="AI Edit
+Paint the area and use Generative Fill to edit with AI">
+                    <img class="texture-slot-icon" src="./assets/texture/ai-edit-icon.svg" alt="AI Edit" width="15" height="15">
+                </button>
+
+                <div class="ai-edit-apply-overlay hidden" id="aiEditApplyBar">
+                    <div class="ai-edit-apply-card">
+                        <span class="ai-edit-apply-label">Paint over areas to edit</span>
+                        <div class="ai-edit-apply-actions">
+                            <button class="ai-edit-apply-btn" id="aiEditApplyBtn">Apply</button>
+                            <button class="ai-edit-cancel-btn" id="aiEditCancelBtn">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="accordion-header" id="frequencyAccordionHeader" data-target="frequencyAccordionContent">
+                <div class="accordion-label">
+                    <div class="accordion-title" data-i18n="acc_frequency_title">Frequency Separation</div>
+                </div>
+                <img class="accordion-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="12" height="18">
+            </button>
+            <div class="accordion-content accordion-content-row" id="frequencyAccordionContent">
+                <button class="tool-btn" id="fsGaussianBtn"><div class="tool-btn-text" data-i18n="btn_gaussian">Gaussian Blur</div></button>
+                <button class="tool-btn" id="fsMedianBtn"><div class="tool-btn-text" data-i18n="btn_median">Median</div></button>
+            </div>
+
+            <button class="accordion-header" id="dodgeBurnAccordionHeader" data-target="dodgeBurnAccordionContent">
+                <div class="accordion-label">
+                    <div class="accordion-title" data-i18n="acc_dodgeburn_title">Dodge &amp; Burn</div>
+                </div>
+                <img class="accordion-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="12" height="18">
+            </button>
+            <div class="accordion-content accordion-content-row" id="dodgeBurnAccordionContent">
+                <button class="tool-btn" id="dbGlobalBtn"><div class="tool-btn-text" data-i18n="btn_global">Global</div></button>
+                <button class="tool-btn" id="dbMacroBtn"><div class="tool-btn-text" data-i18n="btn_macro">Macro</div></button>
+                <button class="tool-btn" id="dbGreyBtn"><div class="tool-btn-text" data-i18n="btn_grey">50% Grey</div></button>
+            </div>
+
+            <button class="accordion-header" id="quickSelectAccordionHeader" data-target="quickSelectAccordionContent">
+                <div class="accordion-label">
+                    <div class="accordion-title" data-i18n="acc_quickselect_title">Quick Select</div>
+                </div>
+                <img class="accordion-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="12" height="18">
+            </button>
+            <div class="accordion-content accordion-content-row" id="quickSelectAccordionContent">
+                <button class="tool-btn" id="qsSkinBtn"><div class="tool-btn-text" data-i18n="btn_skin">Skin</div></button>
+                <button class="tool-btn" id="qsHighlightsBtn"><div class="tool-btn-text" data-i18n="btn_highlights">Highlights</div></button>
+                <button class="tool-btn" id="qsShadowsBtn"><div class="tool-btn-text" data-i18n="btn_shadows">Shadows</div></button>
+            </div>
+
+            <button class="accordion-header" id="colorCorrectionAccordionHeader" data-target="colorCorrectionAccordionContent">
+                <div class="accordion-label">
+                    <div class="accordion-title" data-i18n="acc_colorcorrection_title">Color Correction</div>
+                </div>
+                <img class="accordion-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="12" height="18">
+            </button>
+            <div class="accordion-content accordion-content-column" id="colorCorrectionAccordionContent">
+                <div class="tool-btn-row">
+                    <button class="tool-btn" id="ccSkinToneBtn"><div class="tool-btn-text" data-i18n="btn_skintone">Skin tone</div></button>
+                    <button class="tool-btn" id="ccEyesBtn"><div class="tool-btn-text" data-i18n="btn_eyes">Eyes</div></button>
+                    <button class="tool-btn" id="ccGlowBtn"><div class="tool-btn-text" data-i18n="btn_glow">Glow</div></button>
+                </div>
+                <div class="tool-btn-row">
+                    <button class="tool-btn" id="ccTeethBtn"><div class="tool-btn-text" data-i18n="btn_teeth">Teeth</div></button>
+                    <button class="tool-btn" id="ccBlushBtn"><div class="tool-btn-text" data-i18n="btn_blush">Blush</div></button>
+                    <button class="tool-btn" id="ccLipsBtn"><div class="tool-btn-text" data-i18n="btn_lips">Lips</div></button>
+                </div>
+            </div>
+
+            <button class="accordion-header" id="detailsAccordionHeader" data-target="detailsAccordionContent">
+                <div class="accordion-label">
+                    <div class="accordion-title" data-i18n="acc_details_title">Details</div>
+                </div>
+                <img class="accordion-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="12" height="18">
+            </button>
+            <div class="accordion-content accordion-content-column" id="detailsAccordionContent">
+                <button class="saviz-install-btn" id="detailsInstallAllBtn">
+                    <span id="detailsInstallAllLabel" data-i18n="btn_install_brushes">Instalar Pincéis</span>
+                    <span class="saviz-install-badge" id="detailsInstallAllBadge"></span>
+                </button>
+                <div class="saviz-install-divider"></div>
+                <div class="tool-btn-row">
+                    <button class="tool-btn" id="detailsIrisBtn" data-i18n-title="tt_iris" title="Click to load
+Iris Brush"><div class="tool-btn-text">Iris</div><span class="details-brush-badge hidden" id="detailsIrisBadge"></span></button>
+                    <button class="tool-btn" id="detailsCatchlightBtn" data-i18n-title="tt_catchlight" title="Click to load
+Catchlight Brush"><div class="tool-btn-text">Catchlight</div><span class="details-brush-badge hidden" id="detailsCatchlightBadge"></span></button>
+                </div>
+                <div class="tool-btn-row">
+                    <button class="tool-btn" id="detailsBrowsBtn" data-i18n-title="tt_brows" title="Click to load
+Brows Brush"><div class="tool-btn-text">Brows</div><span class="details-brush-badge hidden" id="detailsBrowsBadge"></span></button>
+                    <button class="tool-btn" id="detailsEyelinerBtn" data-i18n-title="tt_eyeliner" title="Click to load
+Eyeliner Brush"><div class="tool-btn-text">Eyeliner</div><span class="details-brush-badge hidden" id="detailsEyelinerBadge"></span></button>
+                    <button class="tool-btn" id="detailsFrecklesBtn" data-i18n-title="tt_freckles" title="Click to load
+Freckles Brush"><div class="tool-btn-text">Freckles</div><span class="details-brush-badge hidden" id="detailsFrecklesBadge"></span></button>
+                </div>
+                <div class="tool-btn-row">
+                    <button class="tool-btn" id="detailsLashesBtn" data-i18n-title="tt_lashes" title="Click to load
+Lashes Brush"><div class="tool-btn-text">Lashes</div><span class="details-brush-badge hidden" id="detailsLashesBadge"></span></button>
+                    <button class="tool-btn" id="detailsHairBtn" data-i18n-title="tt_hair" title="Click to load
+Hair Brush"><div class="tool-btn-text">Hair</div><span class="details-brush-badge hidden" id="detailsHairBadge"></span></button>
+                </div>
+            </div>
+
+            <button class="accordion-header" id="skinTextureAccordionHeader" data-target="skinTextureAccordionContent">
+                <div class="accordion-label">
+                    <div class="accordion-title" data-i18n="acc_skintexture_title">Skin Texture</div>
+                </div>
+                <img class="accordion-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="12" height="18">
+            </button>
+            <div class="accordion-content accordion-content-column skin-texture-content" id="skinTextureAccordionContent">
+                <button class="saviz-install-btn" id="skinTextureInstallBtn">
+                    <span id="skinTextureInstallLabel" data-i18n="btn_install_textures">Instalar Texturas</span>
+                    <span class="saviz-install-badge" id="skinTextureInstallBadge"></span>
+                </button>
+                <div class="saviz-install-divider"></div>
+                <div class="skin-texture-add-row">
+                    <button class="skin-texture-add-btn" id="skinTextureAddBtn" disabled data-i18n="label_add">Add</button>
+                    <div class="skin-texture-select-wrap">
+                        <button class="skin-texture-select-trigger" id="skinTextureSelectTrigger" type="button">
+                            <span id="skinTextureSelectedLabel" data-i18n="opt_hand_skin">Hand &amp; Skin</span>
+                            <img class="skin-texture-select-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="14" height="14">
+                        </button>
+                        <div class="skin-texture-select-dropdown hidden" id="skinTextureSelectDropdown">
+                            <div class="skin-texture-select-option" data-value="hand and skin" data-label="Hand &amp; Skin">
+                                <span data-i18n="opt_hand_skin">Hand &amp; Skin</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                            <div class="skin-texture-select-option" data-value="Forehead skin" data-label="Forehead Skin">
+                                <span data-i18n="opt_forehead_skin">Forehead Skin</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                            <div class="skin-texture-select-option" data-value="Forehead pores" data-label="Forehead Pores">
+                                <span data-i18n="opt_forehead_pores">Forehead Pores</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                            <div class="skin-texture-select-option" data-value="Highlight texture" data-label="Highlight Texture">
+                                <span data-i18n="opt_highlight_texture">Highlight Texture</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                            <div class="skin-texture-select-option" data-value="skin highlight texture" data-label="Skin Highlight Texture">
+                                <span data-i18n="opt_skin_highlight">Skin Highlight Texture</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                            <div class="skin-texture-select-option" data-value="cheek" data-label="Side Cheek">
+                                <span data-i18n="opt_side_cheek">Side Cheek</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                            <div class="skin-texture-select-option" data-value="cheeks highlight" data-label="Cheeks Highlight">
+                                <span data-i18n="opt_cheeks_highlight">Cheeks Highlight</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                            <div class="skin-texture-select-option" data-value="forehead pores INDIVIDUAL" data-label="Forehead Pores (Individual)">
+                                <span data-i18n="opt_forehead_pores_ind">Forehead Pores (Individual)</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                            <div class="skin-texture-select-option" data-value="cheek individual pores" data-label="Cheek Pores (Individual)">
+                                <span data-i18n="opt_cheek_pores_ind">Cheek Pores (Individual)</span>
+                                <span class="skin-texture-option-badge"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skin-texture-angle-row">
+                    <div class="skin-texture-dial" id="angleDial">
+                        <div class="skin-texture-dial-pointer" id="anglePointer"></div>
+                    </div>
+                    <div class="skin-texture-angle-info">
+                        <div class="skin-texture-label" data-i18n="label_angle">Angle</div>
+                        <div class="skin-texture-value-row">
+                            <input type="number" class="skin-texture-number-input" id="angleInput" value="125" min="0" max="360">
+                            <span class="skin-texture-unit">°</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skin-texture-row">
+                    <div class="skin-texture-label" data-i18n="label_altitude">Altitude</div>
+                    <input type="number" class="skin-texture-number-input" id="altitudeInput" value="30" min="0" max="90">
+                    <span class="skin-texture-unit">°</span>
+                    <label class="skin-texture-checkbox-row">
+                        <input type="checkbox" id="globalLightCheck">
+                        <span data-i18n="label_global_light"> Global Light</span>
+                    </label>
+                </div>
+
+                <div class="skin-texture-slider-row">
+                    <div class="skin-texture-label" data-i18n="label_size">Size</div>
+                    <input type="range" id="sizeSlider" min="1" max="20" value="5">
+                    <input type="number" class="skin-texture-slider-value" id="sizeValue" min="1" max="20" value="5">
+                </div>
+
+                <div class="skin-texture-slider-row">
+                    <div class="skin-texture-label" data-i18n="label_scale">Scale</div>
+                    <input type="range" id="scaleSlider" min="1" max="1000" value="100">
+                    <input type="number" class="skin-texture-slider-value" id="scaleValue" min="1" max="1000" value="100">
+                </div>
+
+                <div class="skin-texture-slider-row">
+                    <div class="skin-texture-label" data-i18n="label_depth">Depth</div>
+                    <input type="range" id="depthSlider" min="-150" max="150" value="100">
+                    <input type="number" class="skin-texture-slider-value" id="depthValue" min="-150" max="150" value="100">
+                </div>
+
+                <div class="skin-texture-slider-row">
+                    <label class="skin-texture-checkbox-row skin-texture-slider-label">
+                        <input type="checkbox" id="highlightsCheck" checked>
+                        <span data-i18n="label_highlights"> Highlights</span>
+                    </label>
+                    <input type="range" id="highlightsSlider" min="0" max="100" value="80">
+                    <input type="number" class="skin-texture-slider-value" id="highlightsValue" min="0" max="100" value="80">
+                </div>
+
+                <div class="skin-texture-slider-row">
+                    <label class="skin-texture-checkbox-row skin-texture-slider-label">
+                        <input type="checkbox" id="shadowsCheck" checked>
+                        <span data-i18n="label_shadows"> Shadows</span>
+                    </label>
+                    <input type="range" id="shadowsSlider" min="0" max="100" value="80">
+                    <input type="number" class="skin-texture-slider-value" id="shadowsValue" min="0" max="100" value="80">
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button class="texture-finish-btn" id="textureFinishBtn" data-i18n="btn_finish">Finish</button>
+            <span class="footer-site">savizstudio.com.br</span>
+        </div>
+    </div>
+
+    <div class="panel-modal-overlay" id="panelModalOverlay">
+        <div class="panel-modal">
+            <div class="panel-modal-icon hidden" id="panelModalIcon"></div>
+            <div class="panel-modal-title" id="panelModalTitle"></div>
+            <div class="panel-modal-message" id="panelModalMessage"></div>
+            <button class="panel-modal-btn" id="panelModalCloseBtn">OK</button>
+        </div>
+    </div>
+
+    <div class="panel-modal-overlay plugin-auth-overlay open" id="pluginAuthModal" role="dialog" aria-modal="true" aria-labelledby="pluginAuthTitle">
+        <div class="panel-modal plugin-auth-modal">
+            <div class="plugin-auth-mark">SJ</div>
+            <div class="panel-modal-title" id="pluginAuthTitle">Entrar no Savior Jordani Studio</div>
+            <p class="plugin-auth-description" id="pluginAuthDescription">Use as credenciais emitidas pelo administrador para acessar o painel.</p>
+            <form id="pluginAuthForm" novalidate>
+                <label class="plugin-auth-label" for="pluginAuthEmail">E-mail</label>
+                <input class="plugin-auth-input" id="pluginAuthEmail" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="voce@exemplo.com" required>
+                <label class="plugin-auth-label plugin-auth-next-label" for="pluginAuthPassword">Senha</label>
+                <input class="plugin-auth-input" id="pluginAuthPassword" name="password" type="password" autocomplete="current-password" required>
+                <label class="plugin-auth-label plugin-auth-next-label" for="pluginActivationKey">Key de ativação</label>
+                <input class="plugin-auth-input" id="pluginActivationKey" name="activationKey" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="SJ-XXXXX-XXXXX-XXXXX-XXXXX" required>
+                <div class="plugin-auth-message" id="pluginAuthMessage" aria-live="polite">Verificando sua licença...</div>
+                <button class="panel-modal-btn plugin-auth-submit" id="pluginAuthSubmit" type="submit">Entrar</button>
+            </form>
+            <p class="plugin-auth-note">A conta é vinculada a este dispositivo após o primeiro login.</p>
+        </div>
+    </div>
+
+    <div class="panel-modal-overlay" id="savizSettingsModal">
+        <div class="panel-modal">
+            <button class="panel-modal-close-x" id="savizSettingsCloseX" aria-label="Close">&times;</button>
+            <div class="panel-modal-title" id="savizSettingsTitle" data-i18n="settings_title">Settings</div>
+            <div class="settings-modal-content">
+                <div class="settings-option-row">
+                    <div class="settings-label" data-i18n="settings_lang">Language / Idioma</div>
+                    <div class="settings-select-wrap">
+                        <button class="settings-select-trigger" id="languageSelectTrigger" type="button">
+                            <span id="languageSelectedLabel">English</span>
+                            <img class="settings-select-arrow" src="./assets/ui/chevron-icon.svg" alt="" width="14" height="14">
+                        </button>
+                        <div class="settings-select-dropdown hidden" id="languageSelectDropdown">
+                            <div class="settings-select-option" data-value="en">
+                                <span>English</span>
+                                <span class="settings-option-badge"></span>
+                            </div>
+                            <div class="settings-select-option" data-value="pt">
+                                <span>Português</span>
+                                <span class="settings-option-badge"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="panel-modal-btn" id="savizSettingsCloseBtn" data-i18n="settings_close">Save & Close</button>
+        </div>
+    </div>
+
+    <div class="panel-modal-overlay" id="savizAboutModal">
+        <div class="panel-modal">
+            <button class="panel-modal-close-x" id="savizAboutCloseX" aria-label="Close">&times;</button>
+            <div class="panel-modal-title" id="savizAboutTitle" data-i18n="about_title">About the plugin</div>
+            <div class="about-modal-content">
+                <div class="about-logo">
+                    <img src="./icons/darkPlugin-large.png" alt="SAVIOR JORDANI STUDIO" width="50" height="50">
+                </div>
+                <div class="about-info">
+                    <div class="about-app-name">SAVIOR JORDANI STUDIO</div>
+                    <div class="about-version" data-i18n="about_version">Version 1.0.0</div>
+                    <div class="about-copyright">© 2026 Savior Jordani Studio</div>
+                    <div class="about-rights" data-i18n="about_rights">All rights reserved.</div>
+                </div>
+            </div>
+            <button class="panel-modal-btn" id="savizAboutCloseBtn" data-i18n="about_close">Close</button>
+        </div>
+    </div>
+
+    <div class="panel-modal-overlay" id="savizHelpModal">
+        <div class="panel-modal panel-modal-large">
+            <button class="panel-modal-close-x" id="savizHelpCloseX" aria-label="Close">&times;</button>
+            <div class="panel-modal-title" id="savizHelpTitle" data-i18n="help_title">Ajuda</div>
+            <div class="help-faq-list">
+                <div class="help-faq-item open">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_install_q">Preciso instalar texturas e pincéis toda vez?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_install_a">Não. Instale uma vez por máquina. Reinstale só se apagar os presets manualmente no Photoshop.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_texture_q">Como revelar uma textura adicionada?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_texture_a">Depois de clicar Add, pinte de branco na máscara da camada ou do grupo criado.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_skin_sliders_q">O que os sliders de Skin Texture fazem?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_skin_sliders_a">Eles ajustam o Bevel & Emboss da textura ativa: tamanho, escala, profundidade, realces, sombras, ângulo e altitude.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_highlight_q">Como funciona a Highlight Texture?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_highlight_a">Ela cria o grupo Paint Here com a textura e a camada Adjust here. Pinte na máscara preta do grupo para revelar o efeito.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_details_q">Por que o botão de Details baixa arquivos?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_details_a">Os pincéis reais são baixados e cacheados localmente. Depois disso, o plugin usa o arquivo salvo na máquina.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_errors_q">O que fazer se aparecer erro do Photoshop?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_errors_a">Confira se há um documento aberto, se a camada correta está ativa e tente recarregar o plugin pelo menu do Photoshop.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_active_layer_q">Qual camada precisa estar selecionada?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_active_layer_a">Para ajustar uma textura, selecione a camada ou o grupo criado por ela antes de mexer nos controles.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_numeric_q">Posso digitar valores nos sliders?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_numeric_a">Sim. Use o campo numérico ao lado do slider para valores exatos, ou arraste o slider para ajuste rápido.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_angle_q">Por que mudar o ângulo altera a luz?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_angle_a">O ângulo controla a direção do Bevel & Emboss da textura ativa. Use Luz Global desligada para manter o ajuste independente.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_masks_q">Por que algumas camadas nascem escondidas?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_masks_a">As máscaras pretas escondem o efeito para você pintar só onde precisar, mantendo o ajuste não destrutivo.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_strength_q">Como reduzo a força de uma textura?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_strength_a">Reduza Profundidade, Realces, Sombras ou a opacidade/preenchimento da camada conforme o tipo de textura.</div>
+                </div>
+                <div class="help-faq-item">
+                    <button class="help-faq-question" type="button">
+                        <span data-i18n="faq_reload_q">Quando devo recarregar o plugin?</span>
+                        <span class="help-faq-arrow"></span>
+                    </button>
+                    <div class="help-faq-answer" data-i18n="faq_reload_a">Recarregue se o Photoshop bloquear um comando, se algum botão parar de responder ou depois de atualizar a pasta do plugin.</div>
+                </div>
+            </div>
+            <button class="panel-modal-btn" id="savizHelpCloseBtn" data-i18n="about_close">Close</button>
+        </div>
+    </div>
+
+    <script src="./js/CSInterface.js"></script>
+    <script src="./js/functions.js"></script>
+    <script src="./js/main.js"></script>
+</body>
+
+</html>

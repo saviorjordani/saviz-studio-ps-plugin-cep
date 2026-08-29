@@ -1,0 +1,1536 @@
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body,
+#root {
+    height: 100%;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    overflow: hidden;
+}
+
+/* CEP embute um Chromium diferente do UXP e também pode ficar sujeito
+   a tema/skin nativo do SO em <button>/<select>/<input> — mesmo fix já
+   usado no painel UXP (sem isso um botão pode virar uma "pílula" com
+   borda nativa do sistema, ignorando todo o CSS). */
+button,
+select,
+input {
+    appearance: none;
+    -webkit-appearance: none;
+    forced-color-adjust: none;
+    font: inherit;
+    color: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* O appearance:none acima também zera o visual nativo de checkbox e
+   dos "spinners" de number input — sem isso viravam caixas invisíveis
+   em vez de somem os controles feios do SO. */
+input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--saviz-dark-04, #171717);
+    border-radius: 3px;
+    background: var(--saviz-dark-2, #0a0a0a);
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+input[type="checkbox"]:checked {
+    background: var(--saviz-green, #f6e58d);
+    border-color: var(--saviz-green, #f6e58d);
+}
+
+input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 4px;
+    height: 8px;
+    border: solid #000;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.panel-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Scrollbar fina "overlay": fica por cima do conteúdo em vez de
+   reservar espaço próprio, então não muda a largura útil do painel
+   quando aparece/some (overflow-y: overlay é suportado pelo Chromium
+   que o CEP embute, mesmo sendo um valor não-padrão/depreciado). */
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--saviz-dark-04, #171717);
+    border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--saviz-gray, #999999);
+}
+
+.content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-y: overlay;
+    overflow-x: hidden;
+    padding: 10px;
+}
+
+/* Header (Frame45) — variação "7": símbolo à esquerda, nome à direita,
+   ribbon de versão no canto superior direito (sem subtítulo). */
+.saviz-header {
+    background: var(--saviz-dark, #121212);
+    padding: 13px 12px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    position: relative;
+}
+
+/* Slot do ícone da própria extensão (icons/darkPlugin-large.png, o mesmo
+   usado no manifest do CEP) — overflow:hidden + raio quase 0 (só uma
+   leve curva no canto, não um círculo). */
+.saviz-header-symbol {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.saviz-header-symbol img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.saviz-header-title {
+    color: var(--saviz-green, #f6e58d);
+    font-size: 13px;
+    line-height: 16px;
+    font-weight: 700;
+}
+
+.saviz-header-menu-wrap {
+    position: relative;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.saviz-header-menu-trigger {
+    width: 22px;
+    height: 22px;
+    background: transparent;
+    border: none;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+}
+
+.saviz-header-menu-trigger:hover {
+    background: var(--saviz-dark-04, #171717);
+}
+
+.saviz-header-menu-trigger span {
+    width: 13px;
+    height: 2px;
+    background: var(--saviz-green, #f6e58d);
+    border-radius: 1px;
+}
+
+.saviz-header-menu-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 30;
+    min-width: 160px;
+    background: var(--saviz-dark-04, #171717);
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.saviz-header-menu-dropdown.hidden {
+    display: none;
+}
+
+.saviz-header-menu-option {
+    padding: 9px 12px;
+    font-size: 13px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.saviz-header-menu-option:hover {
+    background: var(--saviz-dark-2, #0a0a0a);
+}
+
+/* Botão "Finish" — mescla tudo que está visível numa camada nova
+   (equivalente a Ctrl+Alt+Shift+E). Mora dentro do próprio footer
+   (fundo escuro combinando, com padding do footer dando o respiro),
+   não solto/colado em cima dele. */
+.texture-finish-btn {
+    background: var(--saviz-green, #f6e58d);
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.texture-finish-btn:hover {
+    background: #ead36f;
+}
+
+.texture-finish-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Footer */
+.footer {
+    background: var(--saviz-dark, #121212);
+    padding: 18px 16px 26px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-site {
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--saviz-gray, #999999);
+    text-transform: uppercase;
+    text-align: center;
+}
+
+
+/* Helping Layers — mesmo estilo de card dos accordions (ícone + título/
+   subtítulo empilhados), com um botão pill amarelo pastel "Hide"/"Show" à
+   direita em vez de um botão único que troca o texto inteiro. */
+.helping-layers-btn {
+    background: #242424;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0;
+    padding: 6px 10px;
+    margin-bottom: 8px;
+    display: flex;
+    flex-direction: row;
+    gap: 9px;
+    align-items: center;
+    justify-content: flex-start;
+    align-self: stretch;
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.helping-layers-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.helping-layers-title {
+    color: #ffffff;
+    text-align: left;
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 700;
+}
+
+.helping-layers-toggle-btn {
+    background: var(--saviz-green, #f6e58d);
+    color: #000000;
+    border: none;
+    border-radius: 3px;
+    padding: 5px 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.helping-layers-toggle-btn:hover {
+    background: #ead36f;
+}
+
+.helping-layers-toggle-icon {
+    width: 12px;
+    height: 12px;
+    display: block;
+}
+
+.helping-layers-toggle-icon.hidden {
+    display: none;
+}
+
+/* Título "Retouch modes" acima dos accordions */
+.retouch-modes-title {
+    color: var(--saviz-gray, #999999);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+/* Accordion (cabeçalho reutilizável pra Texture e as próximas seções) */
+/* Card: só título + seta (sem ícone/subtítulo — referência Tamara
+   Williams: linha única e enxuta por seção, tanto fechada quanto
+   aberta, respirando só com padding, sem elementos extras de altura). */
+.accordion-header {
+    /* Tom intermediário: dark-04 (#171717) ficava próximo demais do
+       fundo da tela (#1a1a1a) e o card sumia; dark-03 (#373737) ficou
+       claro demais. #242424 destaca sem virar um cinza chapado. */
+    background: #242424;
+    border-radius: 7px;
+    padding: 7px 10px;
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+    flex-shrink: 0;
+    width: 100%;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Quando aberto, o header perde a margem/cantos de baixo pra colar
+   direto no accordion-content dele, formando um bloco só (em vez de
+   dois blocos soltos com um vão no meio). */
+.accordion-header.open {
+    margin-bottom: 0;
+    border-radius: 7px 7px 0 0;
+    border-bottom: none;
+}
+
+.accordion-arrow {
+    flex-shrink: 0;
+    transition: transform 0.15s;
+    opacity: 0.6;
+    /* Ícone original aponta pra baixo — fechado precisa apontar pra
+       direita, então gira -90deg por padrão. */
+    transform: rotate(-90deg);
+}
+
+.accordion-header.open .accordion-arrow {
+    /* Aberto = orientação original do ícone (apontando pra baixo). */
+    transform: rotate(0deg);
+}
+
+.accordion-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    min-width: 0;
+}
+
+.accordion-title {
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 700;
+}
+
+.accordion-content {
+    background: #242424;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0 0 7px 7px;
+    border-top: none;
+    margin-bottom: 4px;
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    flex-shrink: 0;
+}
+
+.accordion-content.open {
+    display: flex;
+}
+
+/* Padding-top bem menor que o padding-bottom em todas as variantes: o
+   header (quando aberto) não tem borda embaixo nem o content tem borda
+   em cima (border-top: none, ver .accordion-content), então os dois
+   formam uma caixa só — o padding-bottom do próprio header (7px) já
+   soma junto com esse padding-top aqui como "espaço acima do primeiro
+   botão". Deixar o padding-top baixo (só 2px) compensa essa soma e
+   deixa o total visual de cima (~7+2=9px) perto do total de baixo
+   (padding-bottom sozinho, ~8px). */
+.accordion-content-wide {
+    padding: 2px 12px 8px;
+    position: relative;
+}
+
+.accordion-content-row {
+    padding: 2px 5px 8px;
+}
+
+.accordion-content-column {
+    padding: 2px 5px 8px;
+    flex-direction: column;
+}
+
+.tool-btn-row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Botão de ferramenta reutilizável (Frequency Separation e as
+   próximas seções que usam esse mesmo estilo) */
+.tool-btn {
+    background: var(--saviz-dark-04, #171717);
+    border-radius: 5px;
+    padding: 3px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    height: 24px;
+    border: none;
+    position: relative;
+}
+
+.tool-btn:hover {
+    background: var(--saviz-green, #f6e58d);
+}
+
+.tool-btn:hover .tool-btn-text {
+    color: #000000;
+}
+
+/* Badge de status do pincel baixado (accordion Details) */
+.details-brush-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    line-height: 1;
+    font-weight: 700;
+}
+
+.details-brush-badge.hidden {
+    display: none;
+}
+
+.details-brush-badge.cached {
+    background: var(--saviz-green, #f6e58d);
+    color: var(--saviz-dark, #121212);
+}
+
+.details-brush-badge.missing {
+    background: #e2003c;
+    color: var(--saviz-white, #f5f5f5);
+}
+
+.tool-btn-text {
+    color: #ffffff;
+    text-align: center;
+    font-size: 12px;
+    line-height: 15px;
+    font-weight: 400;
+    align-self: stretch;
+    white-space: nowrap;
+}
+
+/* Texture: grid de slots — botão vira só o ícone, sem fundo colorido
+   por trás (a cor de identificação de cada ferramenta some junto). */
+.texture-slot {
+    background: none;
+    border-radius: 5px;
+    padding: 3px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    border: none;
+}
+
+.texture-slot:hover {
+    opacity: 0.7;
+}
+
+.texture-slot-dot {
+    background: var(--saviz-gray, #999999);
+    border-radius: 35px;
+    flex-shrink: 0;
+    width: 19px;
+    height: 19px;
+}
+
+.texture-slot-icon {
+    width: 19px;
+    height: 19px;
+    flex-shrink: 0;
+}
+
+/* Skin Texture */
+.skin-texture-content {
+    align-items: stretch;
+    gap: 10px;
+    padding: 2px 12px 8px;
+}
+
+/* Botão genérico de "instalar tudo de uma vez" (Skin Texture:
+   SAVIZTEXTURES.pat; Details: os 7 .abr de pincéis) — baixa/carrega os
+   presets do Photoshop de uma vez, em vez de exigir clique um por um.
+   No Skin Texture o Add fica desabilitado até instalar, evitando
+   reappendar o pattern a cada uso (era isso que criava
+   "SAVIZTEXTURES", "SAVIZTEXTURES 1", etc duplicados). */
+.saviz-install-btn {
+    background: var(--saviz-green, #f6e58d);
+    color: #000000;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 14px;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.saviz-install-btn:hover {
+    background: #ead36f;
+}
+
+#skinTextureInstallBtn.installed {
+    background: #ffffff;
+    color: #000000;
+}
+
+#skinTextureInstallBtn.installed:hover {
+    background: #e6e6e6;
+}
+
+#skinTextureInstallBtn.installed .saviz-install-badge {
+    display: none;
+}
+
+/* Badge (check/X) fica perto da borda direita, não colado nela, em vez
+   de do lado do texto — flutua fora do fluxo do texto centralizado. */
+.saviz-install-badge {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.saviz-install-badge.cached {
+    background: var(--saviz-dark, #121212);
+    color: var(--saviz-green, #f6e58d);
+}
+
+.saviz-install-badge.missing {
+    background: #e0282c;
+    color: #fff;
+}
+
+/* Linha divisória entre o botão "Instalar ..." e o conteúdo abaixo
+   dele — o espaçamento nas duas pontas já vem de graça do gap do
+   flex-container pai (mesmo espaço acima e abaixo da linha). */
+.saviz-install-divider {
+    width: 100%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.12);
+    margin: 4px 0;
+    flex-shrink: 0;
+}
+
+.skin-texture-add-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* flex-wrap (em vez de um breakpoint fixo tipo max-width:275px) —
+   deixa o botão Add e o dropdown quebrarem pra uma segunda linha
+   sozinhos sempre que não couberem lado a lado, sem depender de
+   adivinhar a largura mínima exata que o Photoshop permite. */
+.skin-texture-add-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+    /* Sem isso, o próprio "row" (item flex de accordion-content-column)
+       herda como largura mínima o min-content de "Hand & Skin" sem
+       corte nenhum — o ellipsis lá dentro só afeta pintura, não conta
+       pra esse cálculo — e o card inteiro ficava mais largo que o
+       painel. min-width:0 aqui é o que de fato deixa ele encolher. */
+    min-width: 0;
+}
+
+.skin-texture-add-btn {
+    background: var(--saviz-dark-04, #171717);
+    border-radius: 5px;
+    padding: 6px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex-shrink: 0;
+    border: none;
+    color: #ffffff;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.skin-texture-add-btn:hover {
+    background: var(--saviz-dark-2, #0a0a0a);
+}
+
+.skin-texture-select-wrap {
+    position: relative;
+    flex: 1;
+    /* 0 (não um valor fixo): deixa o texto interno encolher livremente
+       com ellipsis (skin-texture-select-trigger span, que tem seu
+       próprio min-width:0) em vez de forçar a linha toda a vazar pra
+       fora do painel. Abaixo de um certo ponto o media query mais
+       embaixo empilha Add e o seletor em vez de continuar espremendo. */
+    min-width: 0;
+}
+
+.skin-texture-select-trigger {
+    width: 100%;
+    background: var(--saviz-dark-04, #171717);
+    border: none;
+    border-radius: 5px;
+    padding: 6px 10px;
+    color: #ffffff;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.skin-texture-select-trigger:hover {
+    background: var(--saviz-dark-2, #0a0a0a);
+}
+
+.skin-texture-select-trigger span {
+    /* min-width:0 é o que realmente faz o ellipsis funcionar aqui —
+       um flex item sem isso nunca encolhe abaixo do texto inteiro
+       (min-width:auto padrão), então o "..." nunca entrava em ação e
+       o texto vazava pra fora do botão em larguras estreitas. */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.skin-texture-select-arrow {
+    flex-shrink: 0;
+    transform: rotate(90deg);
+    opacity: 0.7;
+}
+
+.skin-texture-select-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 20;
+    background: var(--saviz-dark-04, #171717);
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 5px;
+    max-height: 220px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.skin-texture-select-dropdown.hidden {
+    display: none;
+}
+
+.skin-texture-select-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 7px 10px;
+    font-size: 13px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.skin-texture-select-option:hover {
+    background: var(--saviz-dark-2, #0a0a0a);
+}
+
+.skin-texture-select-option span:first-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Mesma cara da badge do Details (.details-brush-badge), só que em
+   fluxo normal (inline, não position:absolute num canto) porque aqui
+   fica dentro de uma linha de lista, não sobre um botão pequeno. */
+.skin-texture-option-badge {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    line-height: 1;
+    font-weight: 700;
+}
+
+.skin-texture-option-badge.cached {
+    background: var(--saviz-green, #f6e58d);
+    color: var(--saviz-dark, #121212);
+}
+
+.skin-texture-option-badge.missing {
+    background: #e2003c;
+    color: var(--saviz-white, #f5f5f5);
+}
+
+.skin-texture-angle-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+}
+
+.skin-texture-angle-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.skin-texture-dial {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--saviz-dark-04, #171717);
+    background: var(--saviz-dark-2, #0a0a0a);
+    position: relative;
+    flex-shrink: 0;
+    cursor: pointer;
+    user-select: none;
+}
+
+.skin-texture-dial::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: var(--saviz-green, #f6e58d);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.skin-texture-dial-pointer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40%;
+    height: 2px;
+    background: var(--saviz-green, #f6e58d);
+    transform-origin: 0 0;
+}
+
+.skin-texture-label {
+    color: var(--saviz-gray, #999999);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.skin-texture-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.skin-texture-value-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.skin-texture-number-input {
+    width: 46px;
+    background: var(--saviz-dark-04, #171717);
+    border: none;
+    border-radius: 4px;
+    color: #ffffff;
+    padding: 4px 6px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.skin-texture-unit {
+    color: var(--saviz-gray, #999999);
+    font-size: 12px;
+}
+
+.skin-texture-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--saviz-gray, #999999);
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.skin-texture-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.skin-texture-slider-label {
+    width: 90px;
+    flex-shrink: 0;
+}
+
+.skin-texture-slider-row input[type="range"] {
+    flex: 1;
+    /* <input type="range"> tem uma largura intrínseca padrão do Chrome
+       (~170px) que "flex: 1" sozinho NÃO anula — sem min-width:0 ele
+       nunca encolhe abaixo disso, e essa era a causa raiz de todo o
+       card do Skin Texture ficar largo demais e vazar pra fora do
+       painel em larguras estreitas do Photoshop. */
+    min-width: 0;
+    height: 4px;
+    background: var(--saviz-dark-04, #171717);
+    border-radius: 2px;
+    outline: none;
+}
+
+.skin-texture-slider-row input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--saviz-green, #f6e58d);
+    cursor: pointer;
+}
+
+.skin-texture-slider-value {
+    width: 44px;
+    min-width: 44px;
+    height: 24px;
+    padding: 3px 4px;
+    background: var(--saviz-dark-04, #171717);
+    border: none;
+    border-radius: 4px;
+    text-align: right;
+    color: #ffffff;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+/* Modal do painel (substitui o alert() nativo do Photoshop pra avisos
+   que não são erro de script, só instrução pro usuário) */
+.panel-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.panel-modal-overlay.open {
+    display: flex;
+}
+
+.panel-modal {
+    background: var(--saviz-dark-2, #0a0a0a);
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 8px;
+    padding: 20px;
+    width: 260px;
+    max-width: 85%;
+    position: relative;
+}
+
+.panel-modal-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.panel-modal-icon.hidden {
+    display: none;
+}
+
+.panel-modal-spinner {
+    width: 26px;
+    height: 26px;
+    border: 3px solid var(--saviz-dark-03, #373737);
+    border-top-color: var(--saviz-green, #f6e58d);
+    border-radius: 50%;
+    animation: panel-modal-spin 0.8s linear infinite;
+}
+
+.panel-modal-check,
+.panel-modal-error {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.panel-modal-check {
+    background: var(--saviz-green, #f6e58d);
+    color: var(--saviz-dark, #121212);
+}
+
+.panel-modal-check::after {
+    content: '\2713';
+}
+
+.panel-modal-error {
+    background: #e2003c;
+    color: var(--saviz-white, #f5f5f5);
+}
+
+.panel-modal-error::after {
+    content: '!';
+}
+
+@keyframes panel-modal-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.panel-modal-title {
+    color: var(--saviz-white, #f5f5f5);
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.panel-modal-message {
+    color: var(--saviz-gray, #999999);
+    font-size: 13px;
+    line-height: 1.4;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+/* Overlay "Apply/Cancel" do AI Edit — cobre os 6 botões do Texture
+   (centralizado por cima), em vez de empurrar o layout pra baixo. */
+.ai-edit-apply-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.75);
+    border-radius: 6px;
+    z-index: 10;
+}
+
+.ai-edit-apply-overlay.hidden {
+    display: none;
+}
+
+.ai-edit-apply-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: var(--saviz-dark-04, #171717);
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 6px;
+}
+
+.ai-edit-apply-label {
+    color: var(--saviz-white, #f5f5f5);
+    font-size: 12px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.ai-edit-apply-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.ai-edit-apply-btn,
+.ai-edit-cancel-btn {
+    border: none;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.ai-edit-apply-btn {
+    background: var(--saviz-green, #f6e58d);
+    color: var(--saviz-dark, #121212);
+    font-weight: 600;
+}
+
+.ai-edit-cancel-btn {
+    background: transparent;
+    color: var(--saviz-gray, #999999);
+    border: 1px solid var(--saviz-dark-03, #373737);
+}
+
+.panel-modal-btn {
+    background: var(--saviz-green, #f6e58d);
+    color: var(--saviz-dark, #121212);
+    border: none;
+    border-radius: 5px;
+    padding: 8px 0;
+    width: 100%;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Licença do plugin: bloqueia o painel até a sessão ser confirmada pelo
+   Worker. Não carrega conteúdo remoto no webview com Node.js habilitado. */
+.plugin-auth-overlay {
+    z-index: 2000;
+    background: rgba(7, 7, 7, 0.92);
+}
+
+.plugin-auth-modal {
+    width: 282px;
+    max-width: calc(100vw - 28px);
+    padding: 24px 20px 18px;
+}
+
+.plugin-auth-mark {
+    width: 34px;
+    height: 34px;
+    margin: 0 auto 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--saviz-green, #f6e58d);
+    color: var(--saviz-dark, #121212);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+}
+
+.plugin-auth-description,
+.plugin-auth-note {
+    color: var(--saviz-gray, #999999);
+    font-size: 12px;
+    line-height: 1.45;
+    text-align: center;
+}
+
+.plugin-auth-description {
+    margin: 0 0 18px;
+}
+
+.plugin-auth-label {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--saviz-white, #f5f5f5);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.plugin-auth-next-label {
+    margin-top: 11px;
+}
+
+.plugin-auth-input {
+    width: 100%;
+    height: 34px;
+    padding: 0 10px;
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 5px;
+    background: var(--saviz-dark-04, #171717);
+    color: var(--saviz-white, #f5f5f5);
+    font-size: 12px;
+    letter-spacing: 0.35px;
+    outline: none;
+}
+
+.plugin-auth-input:focus {
+    border-color: var(--saviz-green, #f6e58d);
+}
+
+.plugin-auth-message {
+    min-height: 34px;
+    padding: 9px 0 4px;
+    color: var(--saviz-gray, #999999);
+    font-size: 11px;
+    line-height: 1.35;
+    text-align: center;
+}
+
+.plugin-auth-message.error {
+    color: #ff6b81;
+}
+
+.plugin-auth-message.success {
+    color: var(--saviz-green, #f6e58d);
+}
+
+.plugin-auth-submit:disabled {
+    cursor: wait;
+    opacity: 0.62;
+}
+
+.plugin-auth-note {
+    margin: 13px 0 0;
+    font-size: 10px;
+}
+
+.panel-modal-large {
+    width: 320px;
+    max-width: calc(100vw - 24px);
+    height: calc(100vh - 24px);
+    max-height: 560px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.panel-modal-large .panel-modal-title,
+.panel-modal-large .panel-modal-btn {
+    flex: 0 0 auto;
+}
+
+/* Configurações Modal */
+.settings-modal-content {
+    margin: 16px 0 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.settings-option-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+}
+
+.settings-label {
+    font-size: 13px;
+    color: var(--saviz-gray, #999999);
+    font-weight: 500;
+}
+
+/* Seletor Personalizado de Configurações */
+.settings-select-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.settings-select-trigger {
+    background: var(--saviz-dark-04, #171717);
+    color: #ffffff;
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 14px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    outline: none;
+    text-align: left;
+    font-family: inherit;
+}
+
+.settings-select-trigger:focus,
+.settings-select-trigger:hover {
+    border-color: var(--saviz-green, #f6e58d);
+}
+
+.settings-select-arrow {
+    filter: brightness(0) invert(1);
+    transition: transform 0.2s ease;
+}
+
+.settings-select-trigger.open .settings-select-arrow {
+    transform: rotate(180deg);
+}
+
+.settings-select-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--saviz-dark-04, #171717);
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 4px;
+    margin-top: 4px;
+    z-index: 10;
+    box-sizing: border-box;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+.settings-select-dropdown.hidden {
+    display: none;
+}
+
+.settings-select-option {
+    padding: 10px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+}
+
+.settings-select-option:hover {
+    background: var(--saviz-dark-03, #373737);
+}
+
+.settings-select-option.selected {
+    background: var(--saviz-dark-03, #373737);
+    color: var(--saviz-green, #f6e58d);
+}
+
+.settings-option-badge {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: transparent;
+}
+
+.settings-select-option.selected .settings-option-badge {
+    background: var(--saviz-green, #f6e58d);
+    box-shadow: 0 0 6px var(--saviz-green, #f6e58d);
+}
+
+.panel-modal-close-x {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: var(--saviz-gray, #999999);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 8px;
+    transition: color 0.2s ease, transform 0.2s ease;
+    outline: none;
+}
+
+.panel-modal-close-x:hover {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+/* Sobre o Plugin Modal */
+.about-modal-content {
+    margin: 16px 0 24px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+}
+
+.about-logo {
+    background: var(--saviz-dark-04, #171717);
+    padding: 12px;
+    border-radius: 50%;
+    border: 1px solid var(--saviz-dark-03, #373737);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    box-sizing: border-box;
+}
+
+.about-logo img {
+    display: block;
+}
+
+.about-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.about-app-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.about-version {
+    font-size: 12px;
+    color: var(--saviz-green, #f6e58d);
+    font-weight: 600;
+}
+
+.about-copyright,
+.about-rights {
+    font-size: 11px;
+    color: var(--saviz-gray, #999999);
+}
+
+/* Ajuda Modal */
+.help-faq-list {
+    width: 100%;
+    min-height: 0;
+    max-height: none;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    margin: 14px 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    text-align: left;
+    padding-right: 2px;
+}
+
+.help-faq-item {
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 6px;
+    background: var(--saviz-dark-04, #171717);
+    overflow: hidden;
+    flex: 0 0 auto;
+}
+
+.help-faq-question {
+    width: 100%;
+    background: transparent;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 1.35;
+    font-weight: 700;
+    text-align: left;
+}
+
+.help-faq-arrow {
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid var(--saviz-gray, #999999);
+    border-bottom: 2px solid var(--saviz-gray, #999999);
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+.help-faq-item.open .help-faq-arrow {
+    transform: rotate(225deg);
+}
+
+.help-faq-answer {
+    display: none;
+    padding: 0 10px 10px;
+    color: var(--saviz-gray, #999999);
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.help-faq-item.open .help-faq-answer {
+    display: block;
+}
+
+/* Responsividade para larguras mínimas de tela no Photoshop */
+@media (max-width: 275px) {
+    /* Helping Layers */
+    .helping-layers-btn {
+        padding: 6px 8px;
+        gap: 6px;
+    }
+    .helping-layers-toggle-btn {
+        padding: 5px 10px;
+        font-size: 10px;
+    }
+
+    /* Texture Accordion Slots */
+    .accordion-content-wide.open {
+        display: grid !important;
+        grid-template-columns: repeat(3, 28px);
+        justify-content: center;
+        gap: 6px 10px;
+        padding: 9px 8px;
+    }
+
+    /* Skin Texture: Add + seletor de textura empilham em vez de
+       espremer um do lado do outro — mais previsível que depender só
+       de flex-shrink/ellipsis nessa largura. */
+    .skin-texture-add-row {
+        flex-direction: column;
+    }
+
+    /* Altitude: label + input + ° + Global Light quebram em duas
+       linhas em vez de vazar pra fora do painel. */
+    .skin-texture-row {
+        row-gap: 6px;
+    }
+}
+
+/* O MinSize real do painel é 280px. Nesse limite o bloco Helping Layers
+   não comporta título + botão com texto sem quebrar, então o CTA vira
+   botão de ícone. */
+@media (max-width: 300px) {
+    .helping-layers-btn {
+        padding: 6px 8px;
+        gap: 6px;
+    }
+
+    .helping-layers-title {
+        font-size: 11px;
+        line-height: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .helping-layers-toggle-btn {
+        width: 26px;
+        height: 24px;
+        padding: 0;
+        justify-content: center;
+        gap: 0;
+    }
+
+    .helping-layers-toggle-icon {
+        width: 12px;
+        height: 12px;
+    }
+
+    .helping-layers-toggle-btn span {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
+}

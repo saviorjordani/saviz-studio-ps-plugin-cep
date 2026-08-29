@@ -1,0 +1,15 @@
+{
+    "name": "savior-jordani-studio-ps-plugin-cep",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Savior Jordani Studio - painel de retoque CEP para Photoshop (HTML puro, sem build)",
+    "scripts": {
+        "build:test": "node scripts/package-test.js"
+    },
+    "devDependencies": {
+        "clean-css": "^5.3.3",
+        "html-minifier-terser": "^7.2.0",
+        "javascript-obfuscator": "^5.4.7",
+        "terser": "^5.49.0"
+    }
+}
