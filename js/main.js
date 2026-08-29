@@ -85,8 +85,8 @@ var translations = {
         
         btn_install_brushes: "Install Brushes",
         btn_install_brushes_done: "Brushes Installed",
-        btn_install_textures: "Install Texturas",
-        btn_install_textures_done: "Reinstall Texturas",
+        btn_install_textures: "Install Textures",
+        btn_install_textures_done: "Reinstall Textures",
         btn_finish: "Finish",
         
         label_angle: "Angle",
