@@ -1214,6 +1214,94 @@ input[type="number"]::-webkit-outer-spin-button {
     color: #ffffff;
 }
 
+.saviz-menu-option-logout {
+    color: #ff6b81 !important;
+    border-top: 1px solid var(--saviz-dark-03, #373737);
+    margin-top: 4px;
+    padding-top: 8px;
+}
+
+.account-modal-content {
+    padding: 12px 0 16px;
+}
+
+.account-user-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--saviz-dark-04, #171717);
+    border: 1px solid var(--saviz-dark-03, #373737);
+    border-radius: 8px;
+    margin-bottom: 14px;
+}
+
+.account-user-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--saviz-green, #f6e58d);
+    color: var(--saviz-dark, #121212);
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-user-info {
+    overflow: hidden;
+}
+
+.account-user-email {
+    color: var(--saviz-white, #f5f5f5);
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.account-user-status {
+    color: var(--saviz-green, #f6e58d);
+    font-size: 11px;
+    margin-top: 2px;
+}
+
+.account-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--saviz-dark-03, #373737);
+}
+
+.account-detail-label {
+    color: var(--saviz-gray, #999999);
+}
+
+.account-detail-value {
+    color: var(--saviz-white, #f5f5f5);
+    font-weight: 600;
+}
+
+.account-modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+.account-logout-btn {
+    background: #e0282c !important;
+    color: #ffffff !important;
+}
+
+.panel-modal-btn-secondary {
+    background: var(--saviz-dark-03, #373737) !important;
+    color: var(--saviz-white, #f5f5f5) !important;
+}
+
 .panel-modal-large {
     width: 320px;
     max-width: calc(100vw - 24px);

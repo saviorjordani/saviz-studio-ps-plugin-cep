@@ -468,13 +468,61 @@ function showActivateModal(message) {
     if (pluginActivateEmail) pluginActivateEmail.focus();
 }
 
+var currentAuthUser = null;
+
 function unlockPluginAuth(user) {
+    if (user) currentAuthUser = user;
     var label = user && user.email ? 'Login realizado: ' + user.email : 'Login realizado.';
     setAuthMessage(pluginLoginMessage, label, 'success');
     setAuthMessage(pluginActivateMessage, label, 'success');
     if (pluginAuthLoginModal) pluginAuthLoginModal.classList.remove('open');
     if (pluginAuthActivateModal) pluginAuthActivateModal.classList.remove('open');
 }
+
+function openAccountModal() {
+    var savizAccountModal = document.getElementById('savizAccountModal');
+    var savizAccountEmail = document.getElementById('savizAccountEmail');
+    var savizAccountStatus = document.getElementById('savizAccountStatus');
+    var savizAccountExpires = document.getElementById('savizAccountExpires');
+
+    if (savizAccountEmail) {
+        savizAccountEmail.textContent = (currentAuthUser && currentAuthUser.email) ? currentAuthUser.email : 'Usuário Autenticado';
+    }
+    if (savizAccountStatus) {
+        savizAccountStatus.textContent = 'Assinatura Ativa';
+    }
+    if (savizAccountExpires) {
+        if (currentAuthUser && currentAuthUser.expiresAt) {
+            var expDate = new Date(currentAuthUser.expiresAt);
+            savizAccountExpires.textContent = !isNaN(expDate.getTime()) ? expDate.toLocaleDateString('pt-BR') : 'Ativa';
+        } else {
+            savizAccountExpires.textContent = 'Ativa (Anual)';
+        }
+    }
+    if (savizAccountModal) savizAccountModal.classList.add('open');
+}
+
+function closeAccountModal() {
+    var savizAccountModal = document.getElementById('savizAccountModal');
+    if (savizAccountModal) savizAccountModal.classList.remove('open');
+}
+
+function logoutPluginUser() {
+    if (window.SavizFunctions && typeof window.SavizFunctions.clearPluginSession === 'function') {
+        window.SavizFunctions.clearPluginSession();
+    }
+    currentAuthUser = null;
+    closeAccountModal();
+    showLoginModal('Você saiu da sua conta.');
+}
+
+var savizAccountCloseX = document.getElementById('savizAccountCloseX');
+var savizAccountCloseBtn = document.getElementById('savizAccountCloseBtn');
+var savizAccountLogoutBtn = document.getElementById('savizAccountLogoutBtn');
+
+if (savizAccountCloseX) savizAccountCloseX.addEventListener('click', closeAccountModal);
+if (savizAccountCloseBtn) savizAccountCloseBtn.addEventListener('click', closeAccountModal);
+if (savizAccountLogoutBtn) savizAccountLogoutBtn.addEventListener('click', logoutPluginUser);
 
 function validatePluginAuth() {
     if (!window.SavizFunctions || typeof window.SavizFunctions.validatePluginLicense !== 'function') {
@@ -571,7 +619,13 @@ if (savizHeaderMenuTrigger && savizHeaderMenuDropdown) {
         
         var val = row.getAttribute('data-value');
         if (val === 'account') {
-            openPluginAuthModal('Entre com e-mail, senha e key de ativação.');
+            if (currentAuthUser) {
+                openAccountModal();
+            } else {
+                showLoginModal();
+            }
+        } else if (val === 'logout') {
+            logoutPluginUser();
         } else if (val === 'help') {
             if (savizHelpModal) savizHelpModal.classList.add('open');
         } else if (val === 'settings') {

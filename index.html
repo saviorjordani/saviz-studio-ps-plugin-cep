@@ -30,6 +30,7 @@
                     <div class="saviz-header-menu-option" data-value="help" data-i18n="help_title">Ajuda</div>
                     <div class="saviz-header-menu-option" data-value="settings" data-i18n="settings_title">Configurações</div>
                     <div class="saviz-header-menu-option" data-value="about" data-i18n="about_title">Sobre o plugin</div>
+                    <div class="saviz-header-menu-option saviz-menu-option-logout" data-value="logout" id="savizHeaderMenuLogout">Sair</div>
                 </div>
             </div>
         </div>
@@ -492,6 +493,30 @@ Hair Brush"><div class="tool-btn-text">Hair</div><span class="details-brush-badg
                 </div>
             </div>
             <button class="panel-modal-btn" id="savizHelpCloseBtn" data-i18n="about_close">Close</button>
+        </div>
+    </div>
+
+    <div class="panel-modal-overlay" id="savizAccountModal">
+        <div class="panel-modal">
+            <button class="panel-modal-close-x" id="savizAccountCloseX" aria-label="Close">&times;</button>
+            <div class="panel-modal-title">Minha Conta</div>
+            <div class="account-modal-content">
+                <div class="account-user-card">
+                    <div class="account-user-icon">SJ</div>
+                    <div class="account-user-info">
+                        <div class="account-user-email" id="savizAccountEmail">carregando...</div>
+                        <div class="account-user-status" id="savizAccountStatus">Assinatura Ativa</div>
+                    </div>
+                </div>
+                <div class="account-detail-row">
+                    <span class="account-detail-label">Validade da Licença:</span>
+                    <span class="account-detail-value" id="savizAccountExpires">Ativa</span>
+                </div>
+            </div>
+            <div class="account-modal-actions">
+                <button class="panel-modal-btn account-logout-btn" id="savizAccountLogoutBtn" type="button">Sair da Conta</button>
+                <button class="panel-modal-btn panel-modal-btn-secondary" id="savizAccountCloseBtn" type="button">Fechar</button>
+            </div>
         </div>
     </div>
 
