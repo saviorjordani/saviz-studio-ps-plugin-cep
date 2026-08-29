@@ -37,7 +37,7 @@
                     <Menu>Savior Jordani Studio</Menu>
                     <Geometry>
                         <Size>
-                            <Height>900</Height>
+                            <Height>600</Height>
                             <Width>300</Width>
                         </Size>
                         <MinSize>
@@ -45,7 +45,7 @@
                             <Width>280</Width>
                         </MinSize>
                         <MaxSize>
-                            <Height>2000</Height>
+                            <Height>1200</Height>
                             <Width>600</Width>
                         </MaxSize>
                     </Geometry>
