@@ -417,77 +417,135 @@ panelModalCloseBtn.addEventListener('click', function () {
 // ─── Licença do plugin ──────────────────────────────────────────────
 // O Worker é a fonte de verdade. A chave nunca fica no HTML/localStorage:
 // só a sessão curta e o id aleatório do dispositivo ficam no cache local.
-var pluginAuthModal = document.getElementById('pluginAuthModal');
-var pluginAuthForm = document.getElementById('pluginAuthForm');
-var pluginAuthEmail = document.getElementById('pluginAuthEmail');
-var pluginAuthPassword = document.getElementById('pluginAuthPassword');
-var pluginActivationKey = document.getElementById('pluginActivationKey');
-var pluginAuthSubmit = document.getElementById('pluginAuthSubmit');
-var pluginAuthMessage = document.getElementById('pluginAuthMessage');
+var pluginAuthLoginModal = document.getElementById('pluginAuthLoginModal');
+var pluginAuthActivateModal = document.getElementById('pluginAuthActivateModal');
 
-function setPluginAuthMessage(message, state) {
-    if (!pluginAuthMessage) return;
-    pluginAuthMessage.textContent = message || '';
-    pluginAuthMessage.classList.remove('error', 'success');
-    if (state) pluginAuthMessage.classList.add(state);
+var pluginAuthLoginForm = document.getElementById('pluginAuthLoginForm');
+var pluginLoginEmail = document.getElementById('pluginLoginEmail');
+var pluginLoginPassword = document.getElementById('pluginLoginPassword');
+var pluginLoginSubmit = document.getElementById('pluginLoginSubmit');
+var pluginLoginMessage = document.getElementById('pluginLoginMessage');
+
+var pluginActivateForm = document.getElementById('pluginActivateForm');
+var pluginActivateEmail = document.getElementById('pluginActivateEmail');
+var pluginActivatePassword = document.getElementById('pluginActivatePassword');
+var pluginActivationKey = document.getElementById('pluginActivationKey');
+var pluginActivateSubmit = document.getElementById('pluginActivateSubmit');
+var pluginActivateMessage = document.getElementById('pluginActivateMessage');
+
+var pluginSwitchToActivateBtn = document.getElementById('pluginSwitchToActivateBtn');
+var pluginSwitchToLoginBtn = document.getElementById('pluginSwitchToLoginBtn');
+
+function setAuthMessage(el, message, state) {
+    if (!el) return;
+    el.textContent = message || '';
+    el.classList.remove('error', 'success');
+    if (state) el.classList.add(state);
 }
 
 function setPluginAuthBusy(busy) {
-    if (pluginAuthSubmit) pluginAuthSubmit.disabled = !!busy;
-    if (pluginAuthEmail) pluginAuthEmail.disabled = !!busy;
-    if (pluginAuthPassword) pluginAuthPassword.disabled = !!busy;
+    if (pluginLoginSubmit) pluginLoginSubmit.disabled = !!busy;
+    if (pluginLoginEmail) pluginLoginEmail.disabled = !!busy;
+    if (pluginLoginPassword) pluginLoginPassword.disabled = !!busy;
+
+    if (pluginActivateSubmit) pluginActivateSubmit.disabled = !!busy;
+    if (pluginActivateEmail) pluginActivateEmail.disabled = !!busy;
+    if (pluginActivatePassword) pluginActivatePassword.disabled = !!busy;
     if (pluginActivationKey) pluginActivationKey.disabled = !!busy;
 }
 
-function openPluginAuthModal(message) {
-    if (pluginAuthModal) pluginAuthModal.classList.add('open');
-    if (message) setPluginAuthMessage(message, 'error');
-    if (pluginAuthEmail) pluginAuthEmail.focus();
+function showLoginModal(message) {
+    if (pluginAuthActivateModal) pluginAuthActivateModal.classList.remove('open');
+    if (pluginAuthLoginModal) pluginAuthLoginModal.classList.add('open');
+    if (message) setAuthMessage(pluginLoginMessage, message, 'error');
+    if (pluginLoginEmail) pluginLoginEmail.focus();
+}
+
+function showActivateModal(message) {
+    if (pluginAuthLoginModal) pluginAuthLoginModal.classList.remove('open');
+    if (pluginAuthActivateModal) pluginAuthActivateModal.classList.add('open');
+    if (message) setAuthMessage(pluginActivateMessage, message, 'error');
+    if (pluginActivateEmail) pluginActivateEmail.focus();
 }
 
 function unlockPluginAuth(user) {
     var label = user && user.email ? 'Login realizado: ' + user.email : 'Login realizado.';
-    setPluginAuthMessage(label, 'success');
-    if (pluginAuthModal) pluginAuthModal.classList.remove('open');
+    setAuthMessage(pluginLoginMessage, label, 'success');
+    setAuthMessage(pluginActivateMessage, label, 'success');
+    if (pluginAuthLoginModal) pluginAuthLoginModal.classList.remove('open');
+    if (pluginAuthActivateModal) pluginAuthActivateModal.classList.remove('open');
 }
 
 function validatePluginAuth() {
     if (!window.SavizFunctions || typeof window.SavizFunctions.validatePluginLicense !== 'function') {
-        openPluginAuthModal('Não foi possível carregar o módulo de autenticação. Reinstale o plugin.');
+        showLoginModal('Não foi possível carregar o módulo de autenticação. Reinstale o plugin.');
         return;
     }
     setPluginAuthBusy(true);
-    setPluginAuthMessage('Verificando sua sessão...');
+    setAuthMessage(pluginLoginMessage, 'Verificando sua sessão...');
     window.SavizFunctions.validatePluginLicense().then(function (result) {
         if (result && result.valid) {
             unlockPluginAuth(result.user);
             return;
         }
-        openPluginAuthModal(result && result.reason ? result.reason : 'Entre com e-mail, senha e key de ativação.');
+        showLoginModal(result && result.reason ? result.reason : 'Entre com e-mail e senha.');
     }).catch(function (error) {
-        openPluginAuthModal(error && error.message ? error.message : 'Não foi possível validar sua sessão.');
+        showLoginModal(error && error.message ? error.message : 'Não foi possível validar sua sessão.');
         logErr('Erro na validação da sessão:', error);
     }).finally(function () {
         setPluginAuthBusy(false);
     });
 }
 
-if (pluginAuthForm) {
-    pluginAuthForm.addEventListener('submit', function (event) {
+if (pluginSwitchToActivateBtn) {
+    pluginSwitchToActivateBtn.addEventListener('click', function () {
+        showActivateModal();
+    });
+}
+
+if (pluginSwitchToLoginBtn) {
+    pluginSwitchToLoginBtn.addEventListener('click', function () {
+        showLoginModal();
+    });
+}
+
+if (pluginAuthLoginForm) {
+    pluginAuthLoginForm.addEventListener('submit', function (event) {
         event.preventDefault();
         if (!window.SavizFunctions || typeof window.SavizFunctions.loginPluginUser !== 'function') {
-            setPluginAuthMessage('Não foi possível carregar o módulo de autenticação. Reinstale o plugin.', 'error');
+            setAuthMessage(pluginLoginMessage, 'Não foi possível carregar o módulo de autenticação.', 'error');
             return;
         }
         setPluginAuthBusy(true);
-        setPluginAuthMessage('Entrando...');
-        window.SavizFunctions.loginPluginUser(pluginAuthEmail ? pluginAuthEmail.value : '', pluginAuthPassword ? pluginAuthPassword.value : '', pluginActivationKey ? pluginActivationKey.value : '').then(function (result) {
-            if (pluginAuthPassword) pluginAuthPassword.value = '';
+        setAuthMessage(pluginLoginMessage, 'Entrando...');
+        window.SavizFunctions.loginPluginUser(pluginLoginEmail ? pluginLoginEmail.value : '', pluginLoginPassword ? pluginLoginPassword.value : '').then(function (result) {
+            if (pluginLoginPassword) pluginLoginPassword.value = '';
+            unlockPluginAuth(result.user);
+        }).catch(function (error) {
+            setAuthMessage(pluginLoginMessage, error && error.message ? error.message : 'Não foi possível entrar.', 'error');
+            logErr('Erro no login do plugin:', error);
+        }).finally(function () {
+            setPluginAuthBusy(false);
+        });
+    });
+}
+
+if (pluginActivateForm) {
+    pluginActivateForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        if (!window.SavizFunctions || typeof window.SavizFunctions.loginPluginUser !== 'function') {
+            setAuthMessage(pluginActivateMessage, 'Não foi possível carregar o módulo de autenticação.', 'error');
+            return;
+        }
+        setPluginAuthBusy(true);
+        setAuthMessage(pluginActivateMessage, 'Ativando licença...');
+        window.SavizFunctions.loginPluginUser(pluginActivateEmail ? pluginActivateEmail.value : '', pluginActivatePassword ? pluginActivatePassword.value : '', pluginActivationKey ? pluginActivationKey.value : '').then(function (result) {
+            if (pluginActivatePassword) pluginActivatePassword.value = '';
             if (pluginActivationKey) pluginActivationKey.value = '';
             unlockPluginAuth(result.user);
         }).catch(function (error) {
-            setPluginAuthMessage(error && error.message ? error.message : 'Não foi possível entrar.', 'error');
-            logErr('Erro no login do plugin:', error);
+            setAuthMessage(pluginActivateMessage, error && error.message ? error.message : 'Não foi possível ativar a licença.', 'error');
+            logErr('Erro na ativação do plugin:', error);
         }).finally(function () {
             setPluginAuthBusy(false);
         });

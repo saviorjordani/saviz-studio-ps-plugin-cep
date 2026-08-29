@@ -315,22 +315,41 @@ Hair Brush"><div class="tool-btn-text">Hair</div><span class="details-brush-badg
         </div>
     </div>
 
-    <div class="panel-modal-overlay plugin-auth-overlay open" id="pluginAuthModal" role="dialog" aria-modal="true" aria-labelledby="pluginAuthTitle">
+    <!-- Modal 1: Login Normal (E-mail + Senha) -->
+    <div class="panel-modal-overlay plugin-auth-overlay open" id="pluginAuthLoginModal" role="dialog" aria-modal="true" aria-labelledby="pluginAuthLoginTitle">
         <div class="panel-modal plugin-auth-modal">
             <div class="plugin-auth-mark">SJ</div>
-            <div class="panel-modal-title" id="pluginAuthTitle">Entrar no Savior Jordani Studio</div>
-            <p class="plugin-auth-description" id="pluginAuthDescription">Use as credenciais emitidas pelo administrador para acessar o painel.</p>
-            <form id="pluginAuthForm" novalidate>
-                <label class="plugin-auth-label" for="pluginAuthEmail">E-mail</label>
-                <input class="plugin-auth-input" id="pluginAuthEmail" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="voce@exemplo.com" required>
-                <label class="plugin-auth-label plugin-auth-next-label" for="pluginAuthPassword">Senha</label>
-                <input class="plugin-auth-input" id="pluginAuthPassword" name="password" type="password" autocomplete="current-password" required>
-                <label class="plugin-auth-label plugin-auth-next-label" for="pluginActivationKey">Key de ativação</label>
-                <input class="plugin-auth-input" id="pluginActivationKey" name="activationKey" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="SJ-XXXXX-XXXXX-XXXXX-XXXXX" required>
-                <div class="plugin-auth-message" id="pluginAuthMessage" aria-live="polite">Verificando sua licença...</div>
-                <button class="panel-modal-btn plugin-auth-submit" id="pluginAuthSubmit" type="submit">Entrar</button>
+            <div class="panel-modal-title" id="pluginAuthLoginTitle">Entrar na Conta</div>
+            <p class="plugin-auth-description">Entre com seu e-mail e senha cadastrados para acessar o painel.</p>
+            <form id="pluginAuthLoginForm" novalidate>
+                <label class="plugin-auth-label" for="pluginLoginEmail">E-mail</label>
+                <input class="plugin-auth-input" id="pluginLoginEmail" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="voce@exemplo.com" required>
+                <label class="plugin-auth-label plugin-auth-next-label" for="pluginLoginPassword">Senha</label>
+                <input class="plugin-auth-input" id="pluginLoginPassword" name="password" type="password" autocomplete="current-password" required>
+                <div class="plugin-auth-message" id="pluginLoginMessage" aria-live="polite">Verificando sua licença...</div>
+                <button class="panel-modal-btn plugin-auth-submit" id="pluginLoginSubmit" type="submit">Entrar</button>
             </form>
-            <p class="plugin-auth-note">A conta é vinculada a este dispositivo após o primeiro login.</p>
+            <button class="plugin-auth-switch-link" id="pluginSwitchToActivateBtn" type="button">Primeiro acesso ou nova licença? Ativar Chave / Serial</button>
+        </div>
+    </div>
+
+    <!-- Modal 2: Ativação de Licença (E-mail + Senha + Key/Serial) -->
+    <div class="panel-modal-overlay plugin-auth-overlay" id="pluginAuthActivateModal" role="dialog" aria-modal="true" aria-labelledby="pluginActivateTitle">
+        <div class="panel-modal plugin-auth-modal">
+            <div class="plugin-auth-mark">SJ</div>
+            <div class="panel-modal-title" id="pluginActivateTitle">Ativar Licença</div>
+            <p class="plugin-auth-description">Informe seu e-mail, senha e a chave de licença / serial para ativar esta máquina.</p>
+            <form id="pluginActivateForm" novalidate>
+                <label class="plugin-auth-label" for="pluginActivateEmail">E-mail</label>
+                <input class="plugin-auth-input" id="pluginActivateEmail" name="email" type="email" autocomplete="username" autocapitalize="off" spellcheck="false" placeholder="voce@exemplo.com" required>
+                <label class="plugin-auth-label plugin-auth-next-label" for="pluginActivatePassword">Senha</label>
+                <input class="plugin-auth-input" id="pluginActivatePassword" name="password" type="password" autocomplete="current-password" required>
+                <label class="plugin-auth-label plugin-auth-next-label" for="pluginActivationKey">Key de ativação / Serial</label>
+                <input class="plugin-auth-input" id="pluginActivationKey" name="activationKey" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="SJ-XXXXX-XXXXX-XXXXX-XXXXX" required>
+                <div class="plugin-auth-message" id="pluginActivateMessage" aria-live="polite"></div>
+                <button class="panel-modal-btn plugin-auth-submit" id="pluginActivateSubmit" type="submit">Ativar e Entrar</button>
+            </form>
+            <button class="plugin-auth-switch-link" id="pluginSwitchToLoginBtn" type="button">Já ativou sua conta? Entrar com E-mail e Senha</button>
         </div>
     </div>
 

@@ -143,8 +143,10 @@ window.SavizFunctions = window.SavizFunctions || {};
         var accountEmail = String(email || '').trim().toLowerCase();
         var accountPassword = String(password || '');
         var normalizedKey = String(activationKey || '').trim().toUpperCase();
-        if (!accountEmail || !accountPassword || !normalizedKey) return Promise.reject(new Error('Informe e-mail, senha e key de ativação.'));
-        return request('POST', '/v1/plugin/login', { email: accountEmail, password: accountPassword, activationKey: normalizedKey, deviceId: deviceId() }).then(function (result) {
+        if (!accountEmail || !accountPassword) return Promise.reject(new Error('Informe e-mail e senha.'));
+        var payload = { email: accountEmail, password: accountPassword, deviceId: deviceId() };
+        if (normalizedKey) payload.activationKey = normalizedKey;
+        return request('POST', '/v1/plugin/login', payload).then(function (result) {
             saveSession(result);
             return { valid: true, user: result.user || null };
         });
@@ -152,7 +154,7 @@ window.SavizFunctions = window.SavizFunctions || {};
 
     function validatePluginLicense() {
         var saved = session();
-        if (!saved) return Promise.resolve({ valid: false, reason: 'Entre com e-mail, senha e key de ativação.' });
+        if (!saved) return Promise.resolve({ valid: false, reason: 'Entre com sua conta para acessar o painel.' });
         if (Date.parse(saved.expiresAt) <= Date.now()) {
             removeFile('session.json');
             return Promise.resolve({ valid: false, reason: 'Sua sessão expirou. Faça login novamente para continuar.' });
