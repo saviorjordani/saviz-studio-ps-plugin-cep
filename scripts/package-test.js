@@ -253,20 +253,22 @@ async function main() {
         console.log(`Concatenado e minificado ${jsxFiles.length} arquivo(s) de functions-jsx/ em js/hostscript.jsx`);
     }
 
-    // Marcador de build: um .txt vazio em alteracaoNNN.txt na raiz da
-    // pasta -TEST, incrementado a cada build. Como o `windows-pull-cep.bat`
-    // já lista todos os arquivos baixados (dir /s) depois do pull, dá pra
-    // conferir visualmente se o número mudou — confirma que o pull pegou a
-    // versão mais recente, sem depender de lembrar/adivinhar.
+    // Marcador de versão oficial em JSON (version.json)
     const counterFile = path.join(projectDir, '.build-counter');
-    let buildNumber = 1;
+    let buildNumber = 100;
     if (fs.existsSync(counterFile)) {
-        buildNumber = parseInt(fs.readFileSync(counterFile, 'utf8'), 10) + 1 || 1;
+        buildNumber = parseInt(fs.readFileSync(counterFile, 'utf8'), 10) || 100;
     }
     fs.writeFileSync(counterFile, String(buildNumber));
-    const markerName = `alteracao${String(buildNumber).padStart(3, '0')}.txt`;
-    fs.writeFileSync(path.join(testDir, markerName), '');
-    console.log(`Marcador de build: ${markerName}`);
+
+    const versionObj = {
+        build: buildNumber,
+        version: "1.0.0",
+        date: new Date().toISOString().slice(0, 10)
+    };
+    fs.writeFileSync(path.join(projectDir, 'version.json'), JSON.stringify(versionObj, null, 2));
+    fs.writeFileSync(path.join(testDir, 'version.json'), JSON.stringify(versionObj, null, 2));
+    console.log(`Marcador de versão oficial: version.json (build ${buildNumber})`);
 
     console.log(`Pasta de teste gerada em: ${testDir}`);
 }

@@ -32,20 +32,18 @@ O plugin persiste em `ProgramData/SaviorJordaniStudio/Auth` somente:
 Senha e key não são persistidas pelo plugin. Sem validação online válida, os
 controles permanecem bloqueados.
 
-## Build de distribuição
+## Build de distribuição & Deploy R2
 
 ```bash
 npm install
 npm run build:test
 ```
 
-O build recria a pasta oficial, gera `alteracaoNNN.txt`, concatena as pontes e
-scripts JSX, minifica CSS/HTML e ofusca o JavaScript do painel. `CSInterface.js`
-permanece sem ofuscação.
+O build (`vps-build-cep.sh` / `scripts/package-test.js`) recria a pasta oficial (`savior-jordani-studio-ps-plugin-1.0-oficial`), gera o manifesto **`version.json`** com o número de build incrementado, concatena as pontes JS e scripts JSX, minifica CSS/HTML e ofusca o JavaScript do painel (`CSInterface.js` permanece intacto).
 
-Como o processo substitui integralmente a distribuição oficial, revise a árvore
-de arquivos antes de executá-lo. Para assinar um pacote ZXP, use o certificado
-local do projeto e valide o artefato com `hexsign-zxp verify`.
+Para publicar a nova versão para o instalador nativo dos clientes:
+1. Gerar o pacote `.zxp` uncompressed (`zip -r0`) a partir de `savior-jordani-studio-ps-plugin-1.0-oficial`.
+2. Fazer upload de `savizstudio-ps-plugin-1.0.zxp` e `latest.json` para o bucket R2 público (`r2-storage-savizstudio` / `r2savizstudio.devhextar.site`).
 
 ## Desenvolvimento seguro
 
